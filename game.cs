@@ -41,19 +41,24 @@ public class DrawingLinesForm : Form {
 		Device = Graphics.FromImage(Surface); // Get the surface's Graphics interface (has Draw*() methods)
 
 		Timer = new Timer() { Interval = 20, Enabled = true };
-		Timer.Tick += (src,e) => DrawLine();
+		Timer.Tick += (src,e) => {
+			DrawRectangle();
+			Box.Image = Surface; // refresh
+		};
 	}
 
-	public void DrawLine() {
+	void DrawLine() {
 		Device.DrawLine(RandomPen(), RandomPoint(), RandomPoint());
-		Box.Image = Surface; // refresh
+	}
+
+	void DrawRectangle() {
+		Device.DrawRectangle(RandomPen(), RandomRectange());
 	}
 
 	Pen RandomPen() { return new Pen(color: RandomColor(), width: Rand(2, 8)); }
-
 	Color RandomColor() { return Color.FromArgb(100, Rand(), Rand(), Rand()); }
-
 	Point RandomPoint() { return new Point(x: Rand(0, Size.Width), y: Rand(0, Size.Height)); }
+	Rectangle RandomRectange() { return new Rectangle(location: RandomPoint(), size: new Size(Rand(10, 100), Rand(10, 100))); }
 
 	int Rand(int min = 0, int max = 255) { return _rand.Next(min, max); }
 }
