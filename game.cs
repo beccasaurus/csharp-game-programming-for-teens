@@ -42,7 +42,7 @@ public class DrawingLinesForm : Form {
 
 		Timer = new Timer() { Interval = 20, Enabled = true };
 		Timer.Tick += (src,e) => {
-			DrawRectangle();
+			DrawText();
 			Box.Image = Surface; // refresh
 		};
 	}
@@ -55,8 +55,20 @@ public class DrawingLinesForm : Form {
 		Device.DrawRectangle(RandomPen(), RandomRectange());
 	}
 
+	string[] texts = new string[] {
+		"Hello world",
+		"Foo and bar and then foo and some more bar and then foo!",
+		"The cheese stands alone"
+	};
+	void DrawText() {
+		var text = texts[Rand(0, texts.Length - 1)];
+		var font = new Font(familyName: "Times New Roman", emSize: Rand(5, 50), style: FontStyle.Regular, unit: GraphicsUnit.Pixel);
+		Device.DrawString(text, font, RandomBrush(), RandomPoint());
+	}
+
 	Pen RandomPen() { return new Pen(color: RandomColor(), width: Rand(2, 8)); }
 	Color RandomColor() { return Color.FromArgb(100, Rand(), Rand(), Rand()); }
+	Brush RandomBrush() { return new SolidBrush(color: RandomColor()); }
 	Point RandomPoint() { return new Point(x: Rand(0, Size.Width), y: Rand(0, Size.Height)); }
 	Rectangle RandomRectange() { return new Rectangle(location: RandomPoint(), size: new Size(Rand(10, 100), Rand(10, 100))); }
 
