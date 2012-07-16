@@ -42,7 +42,7 @@ public class DrawingLinesForm : Form {
 
 		Timer = new Timer() { Interval = 20, Enabled = true };
 		Timer.Tick += (src,e) => {
-			DrawText();
+			DrawImage();
 			Box.Image = Surface; // refresh
 		};
 	}
@@ -64,6 +64,11 @@ public class DrawingLinesForm : Form {
 		var text = texts[Rand(0, texts.Length - 1)];
 		var font = new Font(familyName: "Times New Roman", emSize: Rand(5, 50), style: FontStyle.Regular, unit: GraphicsUnit.Pixel);
 		Device.DrawString(text, font, RandomBrush(), RandomPoint());
+	}
+
+	void DrawImage() {
+		var image = new Bitmap(filename: "assets/book-cover.jpg");
+		Device.DrawImage(image, RandomRectange());
 	}
 
 	Pen RandomPen() { return new Pen(color: RandomColor(), width: Rand(2, 8)); }
