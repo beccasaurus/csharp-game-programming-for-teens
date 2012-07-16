@@ -36,22 +36,17 @@ public class DrawingLinesForm : Form {
 			BackColor = Color.Black
 		};
 
-		Surface = new Bitmap(this.Size.Width, this.Size.Height);
-		Box.Image = Surface;
-		Device = Graphics.FromImage(Surface);
+		Surface = new Bitmap(this.Size.Width, this.Size.Height); // Make a Surface to draw on
+		Box.Image = Surface; // Tell the PictureBox to render our Bitmap Surface
+		Device = Graphics.FromImage(Surface); // Get the surface's Graphics interface (has Draw*() methods)
 
-		Timer = new Timer() {
-			Interval = 20,
-			Enabled = true,
-		};
+		Timer = new Timer() { Interval = 20, Enabled = true };
 		Timer.Tick += (src,e) => DrawLine();
 	}
 
 	public void DrawLine() {
-		var color = Color.FromArgb(255, 123, 221, 123);
-		var pen = new Pen(color: color, width: 2);
 		Device.DrawLine(RandomPen(), RandomPoint(), RandomPoint());
-		Box.Image = Surface;
+		Box.Image = Surface; // refresh
 	}
 
 	Pen RandomPen() { return new Pen(color: RandomColor(), width: Rand(2, 8)); }
