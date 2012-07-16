@@ -71,6 +71,12 @@ public class DrawingLinesForm : Form {
 		var flipOptions = Enum.GetValues(typeof(RotateFlipType)).OfType<RotateFlipType>().ToList();
 		var image = new Bitmap(filename: "assets/book-cover.jpg");
 		image.RotateFlip(flipOptions[Rand(0, flipOptions.Count - 1)]);
+
+		// Only leave green
+		for (var x = 0; x < image.Width - 1; x++)
+			for (var y = 0; y < image.Height - 1; y++)
+				image.SetPixel(x, y, Color.FromArgb(0, image.GetPixel(x, y).G, 0));
+
 		Device.DrawImage(image, RandomRectange());
 	}
 
