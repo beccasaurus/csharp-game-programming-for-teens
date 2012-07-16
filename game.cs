@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -67,7 +68,9 @@ public class DrawingLinesForm : Form {
 	}
 
 	void DrawImage() {
+		var flipOptions = Enum.GetValues(typeof(RotateFlipType)).OfType<RotateFlipType>().ToList();
 		var image = new Bitmap(filename: "assets/book-cover.jpg");
+		image.RotateFlip(flipOptions[Rand(0, flipOptions.Count - 1)]);
 		Device.DrawImage(image, RandomRectange());
 	}
 
