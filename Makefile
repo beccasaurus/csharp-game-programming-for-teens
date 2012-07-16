@@ -6,6 +6,6 @@ test:	build
 
 build:
 	rm -fv game.exe
-	dmcs -r:System.Windows.Forms.dll game.cs
+	dmcs -r:System.Windows.Forms.dll -r:System.Drawing.dll game.cs
 
 .PHONY:	test
