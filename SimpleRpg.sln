@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleRpg", "src/SimpleRpg.csproj", "{0F15899A-F057-4ADC-8D25-A521E17B726B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleRpg.Specs", "spec/SimpleRpg.Specs.csproj", "{3E6EB63C-1485-4CF5-9892-A4994C41CAFB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F15899A-F057-4ADC-8D25-A521E17B726B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F15899A-F057-4ADC-8D25-A521E17B726B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F15899A-F057-4ADC-8D25-A521E17B726B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F15899A-F057-4ADC-8D25-A521E17B726B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E6EB63C-1485-4CF5-9892-A4994C41CAFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E6EB63C-1485-4CF5-9892-A4994C41CAFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E6EB63C-1485-4CF5-9892-A4994C41CAFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E6EB63C-1485-4CF5-9892-A4994C41CAFB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

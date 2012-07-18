@@ -1,1 +1,10 @@
+*.sw?
+bin
+obj
+*.user
+*.suo
+TestResult.xml
 *.exe
+
+# until I know what sprites I wanna really use
+assets/sprites
