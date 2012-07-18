@@ -38,6 +38,7 @@ namespace SimpleRpg {
 			IsOver = true;
 		}
 
+		// TODO capture combinations like Right+Down to move diagonally.
 		public void SendKey(Keys key) {
 			switch (key) {
 				case Keys.Escape: Stop(); break;
@@ -61,6 +62,8 @@ namespace SimpleRpg {
 
 		void Teardown() {
 			Bitmaps = null;
+			Dragon = null;
+			UI = null;
 		}
 
 		void Draw() {
@@ -93,7 +96,8 @@ namespace SimpleRpg {
 
 			Teardown();
 			Console.WriteLine("EXIT");
-			Application.Exit();
+			// Application.Exit();
+			Environment.Exit(0);
 		}
 
 		// Update game state
