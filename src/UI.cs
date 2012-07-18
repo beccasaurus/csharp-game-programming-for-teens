@@ -9,21 +9,32 @@ namespace SimpleRpg {
 
 		static readonly Size SIZE = new Size(width: 800, height: 600);
 
-		PictureBox GameBoard { get; set; }
+		Game Game { get; set; }
+
+		public PictureBox GameBoard { get; set; }
 
 		public UI() {
 			InitializeComponent();
+
+			Game = new Game(){ UI = this };
 		}
 
 		void InitializeComponent() {
-			Text = "Simple RPG";
-			MaximizeBox = false;
+			Text            = "Simple RPG";
+			MaximizeBox     = false;
+			Size            = new Size(SIZE.Width + 15, SIZE.Height + 35);
 			FormBorderStyle = FormBorderStyle.FixedSingle;
-			Size = new Size(SIZE.Width + 6, SIZE.Height + 28);
 
-			GameBoard = new PictureBox();
-			GameBoard.Parent = this;
-			GameBoard.Size = SIZE;
+			GameBoard = new PictureBox(){
+				Parent      = this,
+				Size        = SIZE,
+				Location    = new Point(5, 5),
+				BorderStyle = BorderStyle.Fixed3D
+			};
+
+			Load       += (sender, e) => Game.Start();
+			FormClosed += (sender, e) => Game.Stop();
+			KeyDown    += (sender, e) => Game.SendKey(e.KeyCode);
 		}
 	}
 }

@@ -7,4 +7,4 @@ TestResult.xml
 *.exe
 
 # until I know what sprites I wanna really use
-assets/sprites
+assets/misc
