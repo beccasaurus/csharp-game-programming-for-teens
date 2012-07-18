@@ -1,10 +1,11 @@
-# default task should build, run tests, THEN launch game (in debug) ... once we have our .exe and all that jazz
+run:	build_debug test_debug
+	@bin/Debug/SimpleRpg.exe
 
 test_debug:	build_debug
-	nunit-color-console -labels bin/Debug/SimpleRpg.Specs.dll
+	@nunit-color-console -labels bin/Debug/SimpleRpg.Specs.dll
 
 test_release:	build_release
-	nunit-color-console -labels bin/Release/SimpleRpg.Specs.dll
+	@nunit-color-console -labels bin/Release/SimpleRpg.Specs.dll
 
 build_debug:	clean
 	@xbuild
@@ -16,5 +17,3 @@ clean:
 	@rm -rfv bin
 	@rm -rfv */obj
 	@rm -rfv TestResult.xml
-
-.PHONY:	test_debug test_release build_debug build_release clean

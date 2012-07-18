@@ -9,4 +9,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("SimpleRpg")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("remi Taylor")]
-[assembly: AssemblyCopyright("Copyright © 2011")]
+[assembly: AssemblyCopyright("Copyright © 2012")]

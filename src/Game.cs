@@ -2,7 +2,7 @@ using System;
 
 namespace SimpleRpg {
 
-	public class SomeClassInMyLibrary {
+	public class Game {
 
 	}
 }
