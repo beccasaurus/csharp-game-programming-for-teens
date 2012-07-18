@@ -19,6 +19,8 @@ namespace SimpleRpg {
 
 		Dictionary<string, Bitmap> Bitmaps { get; set; }
 
+		DragonSprite Dragon { get; set; }
+
 		public bool IsOver { get; set; }
 
 		public Game() {
@@ -37,48 +39,61 @@ namespace SimpleRpg {
 		}
 
 		public void SendKey(Keys key) {
+			if (key == Keys.Down)
+				Console.WriteLine("DOWN!");
+			Console.WriteLine(key);
+
+			switch (key) {
+				case Keys.Escape: Stop(); break;
+				case Keys.Up: Dragon.Y -= 10; break;
+				case Keys.Down: Dragon.Y += 10; break;
+				case Keys.Left: Dragon.X -= 10; break;
+				case Keys.Right: Dragon.X += 10; break;
+			}
 		}
 
 		void Setup() {
 			IsOver = false;
 			Surface = new Bitmap(UI.GameBoard.Width, UI.GameBoard.Height);
-			UI.GameBoard.Image = Surface;
 			Device = Graphics.FromImage(Surface);
 			Bitmaps = new Dictionary<string, Bitmap> {
 				{ "grass",  new Bitmap("assets/grass.bmp")  },
-				{ "dragon", new Bitmap("assets/dragon.png") },
-				{ "book",   new Bitmap("assets/book-cover.jpg") }
+				{ "dragon", new Bitmap("assets/dragon.png") }
 			};
+			Dragon = new DragonSprite();
 		}
 
 		void Teardown() {
 			Bitmaps = null;
 		}
 
-		List<Rectangle> books = new List<Rectangle>();
 		void Draw() {
-			Device.DrawImageUnscaled(Bitmaps["grass"], 0, 0, UI.GameBoard.Width, UI.GameBoard.Height);
-
-			// Add and draw some books, as an example ...
-			if (Environment.TickCount % 5 == 0)
-				books.Add(new Rectangle(location: new Point(Rand(max: UI.GameBoard.Width), Rand(max: UI.GameBoard.Height)), size: new Size(Rand(), Rand())));
-			foreach (var rectangle in books)
-				Device.DrawImageUnscaled(Bitmaps["book"], rectangle);
-
+			DrawBackground();
+			DrawDragonSprite();
 			UI.GameBoard.Image = Surface;
 		}
 
-		Random _rand = new Random();
-		int Rand(int min = 0, int max = 100) {
-			return _rand.Next(min, max);
+		void DrawBackground() {
+			Device.DrawImageUnscaled(Bitmaps["grass"], 0, 0, UI.GameBoard.Width, UI.GameBoard.Height);
+		}
+
+		void DrawDragonSprite() {
+			Device.DrawImage(
+				image: Bitmaps["dragon"],
+				destRect: new Rectangle(Dragon.X, Dragon.Y, Dragon.Width, Dragon.Height),
+				srcRect: new Rectangle(0, 0, 256, 256),
+				srcUnit: GraphicsUnit.Pixel
+			);
 		}
 
 		void Main() {
-			Console.WriteLine("Game.Main()");
+			Draw();
 			var lastFrameTick = 0;
 
 			while (! IsOver) {
 				var currentTick = Environment.TickCount;
+
+				// Update(currentTick - lastFrameTick);
 
 				if (currentTick > (lastFrameTick + 16)) { // 60FPS
 					lastFrameTick = currentTick;
@@ -90,11 +105,11 @@ namespace SimpleRpg {
 			}
 
 			Teardown();
+			Console.WriteLine("EXIT");
 			Application.Exit();
 		}
 
 		// Update game state
-		void Update(int unused) {
-		}
+		void Update(int unused) {}
 	}
 }
