@@ -15,9 +15,9 @@ namespace SimpleRpg {
 
 		Bitmap Surface { get; set; }
 
-		Graphics Device { get; set; }
+		public Graphics Device { get; set; }
 
-		Dictionary<string, Bitmap> Bitmaps { get; set; }
+		public Dictionary<string, Bitmap> Bitmaps { get; set; }
 
 		DragonSprite Dragon { get; set; }
 
@@ -39,16 +39,12 @@ namespace SimpleRpg {
 		}
 
 		public void SendKey(Keys key) {
-			if (key == Keys.Down)
-				Console.WriteLine("DOWN!");
-			Console.WriteLine(key);
-
 			switch (key) {
 				case Keys.Escape: Stop(); break;
-				case Keys.Up: Dragon.Y -= 10; break;
-				case Keys.Down: Dragon.Y += 10; break;
-				case Keys.Left: Dragon.X -= 10; break;
-				case Keys.Right: Dragon.X += 10; break;
+				case Keys.Up: Dragon.Up(); break;
+				case Keys.Down: Dragon.Down(); break;
+				case Keys.Left: Dragon.Left(); break;
+				case Keys.Right: Dragon.Right(); break;
 			}
 		}
 
@@ -69,21 +65,12 @@ namespace SimpleRpg {
 
 		void Draw() {
 			DrawBackground();
-			DrawDragonSprite();
+			Dragon.Draw(game: this);
 			UI.GameBoard.Image = Surface;
 		}
 
 		void DrawBackground() {
 			Device.DrawImageUnscaled(Bitmaps["grass"], 0, 0, UI.GameBoard.Width, UI.GameBoard.Height);
-		}
-
-		void DrawDragonSprite() {
-			Device.DrawImage(
-				image: Bitmaps["dragon"],
-				destRect: new Rectangle(Dragon.X, Dragon.Y, Dragon.Width, Dragon.Height),
-				srcRect: new Rectangle(0, 0, 256, 256),
-				srcUnit: GraphicsUnit.Pixel
-			);
 		}
 
 		void Main() {
