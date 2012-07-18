@@ -9,7 +9,7 @@ namespace SimpleRpg {
 	// We can extract out a Sprite baseclass later.
 	public class DragonSprite {
 
-		int _frameRow = 0;
+		int frameRow = 0;
 
 		public int X { get; set; }
 		public int Y { get; set; }
@@ -24,14 +24,25 @@ namespace SimpleRpg {
 		}
 
 		// TODO make sure we can't leave the board  :P
-		public void Up()    { _frameRow = 0; Y -= 10; }
-		public void Down()  { _frameRow = 4; Y += 10; }
-		public void Left()  { _frameRow = 6; X -= 10; }
-		public void Right() { _frameRow = 2; X += 10; }
+		public void Up()    { frameRow = 0; Y -= 10; }
+		public void Down()  { frameRow = 4; Y += 10; }
+		public void Left()  { frameRow = 6; X -= 10; }
+		public void Right() { frameRow = 2; X += 10; }
 
-		int lastTick;
+		int lastTick = 0;
+		int frameRate = 60;
+		int columns = 8;
+		int currentColumn = 0;
 		public void Draw(Game game) {
-			var spriteFrame = new Rectangle(0, _frameRow * 256, 256, 256); // need to update which sprite to use based on direction and current time ...
+			var tick = Environment.TickCount;
+			if (tick > lastTick + frameRate) {
+				lastTick = tick;
+				currentColumn++;
+				if (currentColumn >= columns)
+					currentColumn = 0;
+			}
+
+			var spriteFrame = new Rectangle(currentColumn * 256, frameRow * 256, 256, 256); // need to update which sprite to use based on direction and current time ...
 
 			game.Device.DrawImage(
 				image: game.Bitmaps["dragon"],
