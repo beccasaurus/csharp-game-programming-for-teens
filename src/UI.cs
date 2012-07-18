@@ -17,6 +17,8 @@ namespace SimpleRpg {
 			InitializeComponent();
 
 			Game = new Game(){ UI = this };
+
+			Console.WriteLine("Done constructing UI");
 		}
 
 		void InitializeComponent() {
@@ -29,10 +31,11 @@ namespace SimpleRpg {
 				Parent      = this,
 				Size        = SIZE,
 				Location    = new Point(5, 5),
-				BorderStyle = BorderStyle.Fixed3D
+				BorderStyle = BorderStyle.Fixed3D,
+				BackColor   = Color.Black
 			};
 
-			Load       += (sender, e) => Game.Start();
+			Shown      += (sender, e) => Game.Start();
 			FormClosed += (sender, e) => Game.Stop();
 			KeyDown    += (sender, e) => Game.SendKey(e.KeyCode);
 		}
