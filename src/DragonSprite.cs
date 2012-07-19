@@ -19,8 +19,8 @@ namespace SimpleRpg {
 		public DragonSprite() {
 			X = 0;
 			Y = 0;
-			Height = 100;
-			Width = 100;
+			Height = 128;
+			Width = 128;
 		}
 
 		// TODO make sure we can't leave the board  :P
