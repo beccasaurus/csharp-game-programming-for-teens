@@ -10,6 +10,7 @@ class Game {
   bool stopped = false;
   Map<String, ImageElement> images;
   List<Sprite> sprites;
+  Player player;
   Image background;
   Set<String> keysPressed;
 
@@ -22,7 +23,7 @@ class Game {
     height = canvas.height;
     keysPressed = new Set<String>();
     sprites = new List<Sprite>();
-    sprites.add(new Sprite(
+    player = new Player(sprite: new Sprite(
       game: this, // we'll define an interface between Game/Canvas/Objects later once we know what we need!
       image: 'archer_attack.png',
       x: 50, y: 100,
@@ -38,8 +39,7 @@ class Game {
         Direction.southWest,
         Direction.west,
         Direction.northWest
-      ],
-      animationRate: 20
+      ]
     ));
     load();
   }
@@ -86,7 +86,7 @@ class Game {
     else if (event.keyIdentifier == 'U+0050') // P
       togglePaused();
     else if (event.keyIdentifier == 'U+0020') // Spacebar
-      sprites[0].shoot();
+      player.shoot();
     else
       keysPressed.add(event.keyIdentifier);
   }
@@ -125,6 +125,7 @@ class Game {
   update(int tick) {
     for (var sprite in sprites)
       sprite.update(tick);
+    player.update(tick);
   }
 
   draw(int tick) {
@@ -132,6 +133,7 @@ class Game {
     drawBackground();
     for (var sprite in sprites)
       sprite.draw(tick);
+    player.draw(tick);
   }
 
   clearCanvas() => ctx.clearRect(0, 0, width, height);

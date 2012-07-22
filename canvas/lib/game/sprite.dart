@@ -8,14 +8,14 @@ class Sprite {
   List<Direction> frameRows;
   int frameColumns;
   int animationRate;
-  Direction direction;
+  Direction _direction;
   int speed;
   bool _move = false;
   bool _animate = false;
   int _animationFrame = 0;
   int _lastTick = 0;
 
-  Sprite([game, image, x, y, width, height, frameColumns, frameRows, animationRate, direction, speed]) {
+  Sprite([game, image, x, y, width, height, frameColumns, frameRows, animationRate = 60, direction, speed]) {
     this.game = game;
     this.image = image;
     this.x = x;
@@ -29,11 +29,17 @@ class Sprite {
     this.direction = (direction != null) ? direction : Direction.north;
   }
 
+  Direction get direction() => _direction;
+  void set direction(Direction dir) {
+    if (dir != null) {
+      _move = true; // we did something, we need to move
+      _direction = dir;
+    }
+  }
+
   log(msg) => game.log(msg);
   CanvasRenderingContext2D get ctx() => game.ctx;
   List<ImageElement> get images() => game.images;
-
-  shoot() => _animate = true;
 
   draw(tick) {
     var img = images[image];
@@ -44,21 +50,16 @@ class Sprite {
   }
 
   update(tick) {
-    updateDirection();    
     if (_animate) animate(tick);
     if (_move) move();
   }
 
-  updateDirection() {
-    var newDirection = Direction.fromKeys(new List<KeyName>.from(game.keysPressed));
-    if (newDirection != null) {
-      _move = true;
-      direction = newDirection;
-    }
+  animateOnce() {
+    _animate = true;
   }
 
   animate(tick) {
-    if (tick > _lastTick + 60) {
+    if (tick > _lastTick + animationRate) {
       _lastTick = tick;
       _animationFrame++;
       if (_animationFrame >= frameColumns) { // done with this animation
@@ -70,6 +71,7 @@ class Sprite {
   }
 
   move() {
+    game.log("move");
     _move = false;
     x += direction.xVelocity * speed;
     y += direction.yVelocity * speed;
