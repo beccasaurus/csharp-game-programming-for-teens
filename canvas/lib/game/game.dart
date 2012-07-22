@@ -28,6 +28,7 @@ class Game {
       x: 50, y: 100,
       width: 96, height: 96,
       speed: 2,
+      frameColumns: 10,
       frameRows: [
         Direction.north,
         Direction.northEast,
@@ -35,8 +36,8 @@ class Game {
         Direction.southEast,
         Direction.south,
         Direction.southWest,
-        Direction.northWest,
-        Direction.west
+        Direction.west,
+        Direction.northWest
       ],
       animationRate: 20
     ));
@@ -82,9 +83,9 @@ class Game {
 
     if (event.keyIdentifier == 'U+001B') // ESC
       toggleLoop();
-    else if (event.keyIdentifier == 'U+0020') // Spacebar
+    else if (event.keyIdentifier == 'U+0050') // P
       togglePaused();
-    else if (event.keyIdentifier == 'Enter')
+    else if (event.keyIdentifier == 'U+0020') // Spacebar
       sprites[0].shoot();
     else
       keysPressed.add(event.keyIdentifier);
