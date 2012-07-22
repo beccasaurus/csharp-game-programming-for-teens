@@ -34,7 +34,8 @@ class Game {
       width: 32, height: 32,
       speed: 5,
       frameColumns: 1,
-      movesPerTick: 1
+      movesPerTick: 1,
+      projectile: true
     );
     sprites.add(arrow);
 
