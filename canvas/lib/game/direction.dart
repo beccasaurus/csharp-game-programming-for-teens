@@ -3,14 +3,14 @@
  */
 class Direction {
 
-  static final Direction north     = const Direction("North", 0, -1, const [KeyName.UP]);
-  static final Direction south     = const Direction("South", 0, 1, const [KeyName.DOWN]);
-  static final Direction east      = const Direction("East", 1, 0, const [KeyName.RIGHT]);
-  static final Direction west      = const Direction("West", -1, 0, const [KeyName.LEFT]);
-  static final Direction northEast = const Direction("North East", 1, -1, const [KeyName.UP, KeyName.RIGHT]);
-  static final Direction northWest = const Direction("North West", -1, -1, const [KeyName.UP, KeyName.LEFT]);
-  static final Direction southEast = const Direction("South East", 1, 1, const [KeyName.DOWN, KeyName.RIGHT]);
-  static final Direction southWest = const Direction("South West", -1, 1, const [KeyName.DOWN, KeyName.LEFT]);
+  static final Direction north     = const Direction('North', 0, -1, const [KeyName.UP]);
+  static final Direction south     = const Direction('South', 0, 1, const [KeyName.DOWN]);
+  static final Direction east      = const Direction('East', 1, 0, const [KeyName.RIGHT]);
+  static final Direction west      = const Direction('West', -1, 0, const [KeyName.LEFT]);
+  static final Direction northEast = const Direction('North East', 1, -1, const [KeyName.UP, KeyName.RIGHT]);
+  static final Direction northWest = const Direction('North West', -1, -1, const [KeyName.UP, KeyName.LEFT]);
+  static final Direction southEast = const Direction('South East', 1, 1, const [KeyName.DOWN, KeyName.RIGHT]);
+  static final Direction southWest = const Direction('South West', -1, 1, const [KeyName.DOWN, KeyName.LEFT]);
 
   // NOTE: 2-part directions are intentionally listed first here (coupled to key checking).  Do not change.
   static final List<Direction> all = const [ northEast, northWest, southEast, southWest, north, south, east, west ];

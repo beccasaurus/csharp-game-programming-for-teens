@@ -13,6 +13,7 @@ class Game {
   Player player;
   Image background;
   Set<String> keysPressed;
+  List<String> imagesToLoad = const ['grass.bmp', 'archer_attack.png', 'zombie walk.png'];
 
   log(msg) => window.console.log(msg);
 
@@ -23,6 +24,32 @@ class Game {
     height = canvas.height;
     keysPressed = new Set<String>();
     sprites = new List<Sprite>();
+
+    // Zombie
+    sprites.add(new Sprite(
+      game: this, // we'll define an interface between Game/Canvas/Objects later once we know what we need!
+      image: 'zombie walk.png',
+      x: 5, y: 5,
+      width: 96, height: 96,
+      speed: 1,
+      frameColumns: 8,
+      movesPerTick: 1,
+      frameRows: [
+        Direction.north,
+        Direction.northEast,
+        Direction.east,
+        Direction.southEast,
+        Direction.south,
+        Direction.southWest,
+        Direction.west,
+        Direction.northWest
+      ],
+      direction: Direction.east,
+      onBoundsCollision: (s) {
+        s.direction = (s.direction == Direction.east) ? Direction.west : Direction.east;
+      }
+    ));
+
     player = new Player(sprite: new Sprite(
       game: this, // we'll define an interface between Game/Canvas/Objects later once we know what we need!
       image: 'archer_attack.png',
@@ -47,7 +74,7 @@ class Game {
   load() {
     ctx.fillText('Loading ...', 10, 10);
     images = new Map<String, ImageElement>();
-    for (var image in ['grass.bmp', 'archer_attack.png']) {
+    for (var image in imagesToLoad) {
       log('loading $image ...');
       images[image] = new ImageElement(src: 'assets/$image');
       images[image].on.load.add((event) {

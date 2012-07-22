@@ -10,12 +10,14 @@ class Sprite {
   int animationRate;
   Direction _direction;
   int speed;
-  bool _move = false;
   bool _animate = false;
   int _animationFrame = 0;
   int _lastTick = 0;
+  int moves = 0;
+  int movesPerTick = 0;
+  Function onBoundsCollision;
 
-  Sprite([game, image, x, y, width, height, frameColumns, frameRows, animationRate = 60, direction, speed]) {
+  Sprite([game, image, x, y, width, height, frameColumns, frameRows, animationRate = 60, direction, speed, onBoundsCollision, movesPerTick]) {
     this.game = game;
     this.image = image;
     this.x = x;
@@ -26,13 +28,15 @@ class Sprite {
     this.frameRows = frameRows;
     this.animationRate = animationRate;
     this.speed = speed;
-    this.direction = (direction != null) ? direction : Direction.north;
+    this._direction = (direction != null) ? direction : Direction.north;
+    this.onBoundsCollision = onBoundsCollision;
+    this.movesPerTick = movesPerTick;
   }
 
   Direction get direction() => _direction;
   void set direction(Direction dir) {
     if (dir != null) {
-      _move = true; // we did something, we need to move
+      moves = 1;
       _direction = dir;
     }
   }
@@ -50,8 +54,12 @@ class Sprite {
   }
 
   update(tick) {
+    if (onBoundsCollision != null && ((x < 0) || (y < 0) || (x + width > game.width) || (y + height > game.height)))
+      onBoundsCollision(this);
+
+    if (movesPerTick != null) moves += movesPerTick;
     if (_animate) animate(tick);
-    if (_move) move();
+    if (moves > 0) move();
   }
 
   animateOnce() {
@@ -72,8 +80,10 @@ class Sprite {
 
   move() {
     game.log("move");
-    _move = false;
-    x += direction.xVelocity * speed;
-    y += direction.yVelocity * speed;
+    while (moves > 0) {
+      moves--;
+      x += direction.xVelocity * speed;
+      y += direction.yVelocity * speed;
+    }
   }
 }
