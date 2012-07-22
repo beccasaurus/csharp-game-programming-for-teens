@@ -8,7 +8,7 @@ void main() {
 class Game {
   Document doc;
   CanvasRenderingContext2D ctx;
-  HTMLCanvasElement canvas;
+  CanvasElement canvas;
   int width;
   int height;
   bool stopped = false;
