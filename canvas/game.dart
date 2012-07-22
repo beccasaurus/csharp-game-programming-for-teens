@@ -21,7 +21,7 @@ class Game {
 
   Game() {
     canvas = document.query('#canvas');
-    ctx = canvas.getContext("2d");
+    ctx = canvas.getContext('2d');
     width = canvas.width;
     height = canvas.height;
     random = new Random();
@@ -30,13 +30,13 @@ class Game {
   }
 
   load() {
-    ctx.fillText("Loading ...", 10, 10);
+    ctx.fillText('Loading ...', 10, 10);
     images = new Map<String, ImageElement>();
-    for (var image in ["grass.bmp", "archer_attack.png"]) {
-      window.console.log("loading $image ...");
-      images[image] = new ImageElement(src: "assets/$image");
+    for (var image in ['grass.bmp', 'archer_attack.png']) {
+      window.console.log('loading $image ...');
+      images[image] = new ImageElement(src: 'assets/$image');
       images[image].on.load.add((event) {
-        window.console.log("loaded $image");
+        window.console.log('loaded $image');
       });
     }
   }
@@ -61,45 +61,41 @@ class Game {
 
   onKeyDown(event) {
     window.console.log(event.keyIdentifier);
-    if (event.keyIdentifier == "U+001B") // ESC
+    if (event.keyIdentifier == 'U+001B') // ESC
       toggleLoop();
-    if (event.keyIdentifier == "U+0020") // Spacebar
+    if (event.keyIdentifier == 'U+0020') // Spacebar
       togglePaused();
   }
 
   toggleLoop() {
-    if (runLoop)
-      stop();
-    else
-      start();
+    if (runLoop) stop();
+    else start();
   }
 
   togglePaused() {
-    window.console.log("set paused to $paused");
     paused = !paused;
+    document.query('#paused').dataAttributes['enabled'] = true;
   }
 
   start() {
     runLoop = true;
+    document.query('#stopped').dataAttributes['enabled'] = false;
     window.requestAnimationFrame(loop);
   }
 
-  stop() => runLoop = false;
+  stop() {
+    runLoop = false;
+    document.query('#stopped').dataAttributes['enabled'] = true;
+  }
 
   loop(int time) {
     if (runLoop) {
       window.console.log(time);
       if (doneLoading) {
-        if (paused) {
-          ctx.fillText("Paused", 10, 10);
-        } else {
-          update();
-          draw();
-        }
+        if (! paused) update();
+        draw();
       }
       window.requestAnimationFrame(loop);
-    } else {
-      ctx.fillText("STOPPED", 10, 10);
     }
   }
 
@@ -108,7 +104,7 @@ class Game {
   draw() {
     clearCanvas();
     drawBackground();
-    ctx.fillText("DONE", 50, 50);
+    ctx.fillText('DONE', 50, 50);
   }
 
   clearCanvas() => ctx.clearRect(0, 0, width, height);
