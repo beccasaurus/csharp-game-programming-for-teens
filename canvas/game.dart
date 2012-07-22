@@ -14,11 +14,11 @@ class Game {
   bool runLoop = true;
   bool paused = false;
   bool stopped = false;
-  Random random;
   Map<String, ImageElement> images;
   List<Sprite> sprites;
   Player player;
   Image background;
+  Set<String> keysPressed;
 
   log(msg) => window.console.log(msg);
 
@@ -27,14 +27,24 @@ class Game {
     ctx = canvas.getContext('2d');
     width = canvas.width;
     height = canvas.height;
-    random = new Random();
+    keysPressed = new Set<String>();
     sprites = new List<Sprite>();
     sprites.add(new Sprite(
       game: this, // we'll define an interface between Game/Canvas/Objects later once we know what we need!
       image: 'archer_attack.png',
       x: 50, y: 100,
       width: 96, height: 96,
-      frameRows: { 'North': 0, 'South': 4, 'East': 2, 'West': 7 },
+      speed: 2,
+      frameRows: {
+        'North': 0,
+        'NorthEast': 1,
+        'East': 2,
+        'SouthEast': 3,
+        'South': 4,
+        'SouthWest': 5,
+        'NorthWest': 6,
+        'West': 7
+      },
       animationRate: 20
     ));
     load();
@@ -69,14 +79,20 @@ class Game {
     log('Loading Complete.');
   }
 
-  onKeyUp(event) {} 
+  onKeyUp(event) {
+    log("UP: ${event.keyIdentifier}");
+    keysPressed.remove(event.keyIdentifier);
+  }
 
   onKeyDown(event) {
-    log(event.keyIdentifier);
+    log("Pressed key: ${event.keyIdentifier}");
+
     if (event.keyIdentifier == 'U+001B') // ESC
       toggleLoop();
-    if (event.keyIdentifier == 'U+0020') // Spacebar
+    else if (event.keyIdentifier == 'U+0020') // Spacebar
       togglePaused();
+    else
+      keysPressed.add(event.keyIdentifier);
   }
 
   toggleLoop() {
@@ -102,7 +118,7 @@ class Game {
 
   loop(int time) {
     if (runLoop) {
-      log(time);
+      // log(time);
       if (doneLoading) {
         if (! paused) update();
         draw();
@@ -137,12 +153,16 @@ class Sprite {
   int y;
   int width;
   int height;
+  int xVelocity;
+  int yVelocity;
   Map<String, int> frameRows;
   int animationRate;
   String direction;
   List<String> directions;
+  Map<String, List<String>> directionsAndKeys;
+  int speed;
 
-  Sprite([var game, var image, var x, var y, var width, var height, var frameRows, var animationRate, var direction]) {
+  Sprite([game, image, x, y, width, height, frameRows, animationRate, direction, speed]) {
     this.game = game;
     this.image = image;
     this.x = x;
@@ -151,39 +171,68 @@ class Sprite {
     this.height = height;
     this.frameRows = frameRows;
     this.animationRate = animationRate;
+    this.speed = speed;
     this.direction = (direction != null) ? direction : 'North';
-    this.directions = ['North', 'South', 'East', 'West'];
-    random = new Random();
+    this.directions = ["NorthEast", "NorthWest", "SouthEast", "SouthWest", "North", "South", "East", "West"];
+    this.directionsAndKeys = {
+      'North': ["Up"],
+      'South': ["Down"],
+      'East': ["Right"],
+      'West': ["Left"],
+      'NorthEast': ["Up", "Right"],
+      'NorthWest': ["Up", "Left"],
+      'SouthEast': ["Down", "Right"],
+      'SouthWest': ["Down", "Left"]
+    };
+    xVelocity = 0;
+    yVelocity = 0;
   }
 
+  log(msg) => game.log(msg);
   CanvasRenderingContext2D get ctx() => game.ctx;
   List<ImageElement> get images() => game.images;
 
   draw() {
     var img = images[image];
     ctx.drawImage(img,
-      // source      (x, y, width, height)
-      0, frameRows[direction] * height, width, height,
-      // destination (x, y, width, height)
-      x, y, width, height
+      0, frameRows[direction] * height, width, height, // source      (x, y, width, height)
+      x, y, width, height                              // destination (x, y, width, height)
     );
   }
 
-  Random random;
   update() {
-    if (random.nextInt(6) % 2 == 0)
-      x += random.nextInt(5);
-    else
-      x -= random.nextInt(5);
+    xVelocity = 0;
+    yVelocity = 0;
+    var keysPressed = new Set<String>.from(game.keysPressed);
+    updateDirectionAndVelocity(keysPressed);
+    // log("Direction: $direction");
+    // log("x,y velocities: $xVelocity, $yVelocity");
+    // log("location: $x, $y");
+    move();
+  }
 
-    if (random.nextInt(6) % 2 == 0)
-      y += random.nextInt(5);
-    else
-      y -= random.nextInt(5);
+  List<String> get keysForDirection() => directionsAndKeys[direction];
 
-    direction = directions[random.nextInt(directions.length - 1)];
+  updateDirectionAndVelocity(Set<String> keysPressed) {
+    if (keysPressed.length == 0) return;
 
-    // log('x,y  $x $y');
+    log("keys pressed: ${keysPressed}");
+
+    for (var dir in directions) {
+      var keys = directionsAndKeys[dir];
+      if (keys.every((key) => keysPressed.contains(key))) {
+        this.direction = dir;
+        if (keys.indexOf("Up") > -1) yVelocity = -1;
+        if (keys.indexOf("Down") > -1) yVelocity = 1;
+        if (keys.indexOf("Left") > -1) xVelocity = -1;
+        if (keys.indexOf("Right") > -1) xVelocity = 1;
+      }
+    }
+  }
+
+  move() {
+    x += xVelocity * speed;
+    y += yVelocity * speed;
   }
 }
 
