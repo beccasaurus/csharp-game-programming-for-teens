@@ -10,6 +10,8 @@ class Game {
   int width;
   int height;
   bool _doneLoading = false;
+  bool runLoop = true;
+  bool paused = false;
   bool stopped = false;
   Random random;
   Map<String, ImageElement> images;
@@ -40,28 +42,76 @@ class Game {
   }
 
   get doneLoading() {
-    if (_doneLoading) return true;    
-    _doneLoading = images.getValues().every((img) => img.complete);
-    return _doneLoading;
+    if (_doneLoading)
+      return true;
+    else {
+      _doneLoading = images.getValues().every((img) => img.complete);
+      if (_doneLoading)
+        onLoaded();
+      return _doneLoading;
+    }
   }
 
-  start() => window.requestAnimationFrame(loop);
+  onLoaded() {
+    document.on.keyUp.add((event) => onKeyUp(event));
+    document.on.keyDown.add((event) => onKeyDown(event));
+  }
+
+  onKeyUp(event) {} 
+
+  onKeyDown(event) {
+    window.console.log(event.keyIdentifier);
+    if (event.keyIdentifier == "U+001B") // ESC
+      toggleLoop();
+    if (event.keyIdentifier == "U+0020") // Spacebar
+      togglePaused();
+  }
+
+  toggleLoop() {
+    if (runLoop)
+      stop();
+    else
+      start();
+  }
+
+  togglePaused() {
+    window.console.log("set paused to $paused");
+    paused = !paused;
+  }
+
+  start() {
+    runLoop = true;
+    window.requestAnimationFrame(loop);
+  }
+
+  stop() => runLoop = false;
 
   loop(int time) {
-    window.console.log(time);
-    if (doneLoading) {
-      update();
-      draw();
+    if (runLoop) {
+      window.console.log(time);
+      if (doneLoading) {
+        if (paused) {
+          ctx.fillText("Paused", 10, 10);
+        } else {
+          update();
+          draw();
+        }
+      }
+      window.requestAnimationFrame(loop);
+    } else {
+      ctx.fillText("STOPPED", 10, 10);
     }
-    window.requestAnimationFrame(loop);
   }
 
   update() {}
 
   draw() {
+    clearCanvas();
     drawBackground();
     ctx.fillText("DONE", 50, 50);
   }
+
+  clearCanvas() => ctx.clearRect(0, 0, width, height);
 
   drawBackground() {
     // ctx.drawImage(image, 0, 0, 50, 50, 0, 0, 50, 50);
