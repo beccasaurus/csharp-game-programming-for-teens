@@ -1,9 +1,7 @@
 #import('dart:html');
 #import('dart:math');
 
-void main() {
-  new Game().run();
-}
+main() => new Game().start();
 
 class Game {
   Document doc;
@@ -11,8 +9,13 @@ class Game {
   CanvasElement canvas;
   int width;
   int height;
+  bool _doneLoading = false;
   bool stopped = false;
   Random random;
+  Map<String, ImageElement> images;
+  List<Sprite> sprites;
+  Player player;
+  Image background;
 
   Game() {
     canvas = document.query('#canvas');
@@ -20,33 +23,53 @@ class Game {
     width = canvas.width;
     height = canvas.height;
     random = new Random();
-
-    window.console.log(this);
+    sprites = new List<Sprite>();
+    load();
   }
 
-  void run() => start();
+  load() {
+    ctx.fillText("Loading ...", 10, 10);
+    images = new Map<String, ImageElement>();
+    for (var image in ["grass.bmp", "archer_attack.png"]) {
+      window.console.log("loading $image ...");
+      images[image] = new ImageElement(src: "assets/$image");
+      images[image].on.load.add((event) {
+        window.console.log("loaded $image");
+      });
+    }
+  }
 
-  void start() {
-    print("starting game");
+  get doneLoading() {
+    if (_doneLoading) return true;    
+    _doneLoading = images.getValues().every((img) => img.complete);
+    return _doneLoading;
+  }
+
+  start() => window.requestAnimationFrame(loop);
+
+  loop(int time) {
+    window.console.log(time);
+    if (doneLoading) {
+      update();
+      draw();
+    }
     window.requestAnimationFrame(loop);
   }
 
-  void loop(int time) {
-    update();
-    draw();
-    window.requestAnimationFrame(loop);
-  }
-
-  update() {
-    ctx.fillStyle = "#FF00FF";
-  }
+  update() {}
 
   draw() {
-    ctx.fillRect(
-      100 + random.nextInt(200),
-      100 + random.nextInt(200),
-      100 + random.nextInt(200),
-      100 + random.nextInt(200)
-    );
+    drawBackground();
+    ctx.fillText("DONE", 50, 50);
+  }
+
+  drawBackground() {
+    // ctx.drawImage(image, 0, 0, 50, 50, 0, 0, 50, 50);
   }
 }
+
+class Sprite {
+
+}
+
+class Player extends Sprite {}
