@@ -28,16 +28,16 @@ class Game {
       x: 50, y: 100,
       width: 96, height: 96,
       speed: 2,
-      frameRows: {
-        'North': 0,
-        'NorthEast': 1,
-        'East': 2,
-        'SouthEast': 3,
-        'South': 4,
-        'SouthWest': 5,
-        'NorthWest': 6,
-        'West': 7
-      },
+      frameRows: [
+        Direction.north,
+        Direction.northEast,
+        Direction.east,
+        Direction.southEast,
+        Direction.south,
+        Direction.southWest,
+        Direction.northWest,
+        Direction.west
+      ],
       animationRate: 20
     ));
     load();
@@ -111,27 +111,26 @@ class Game {
     document.query('#stopped').dataAttributes['enabled'] = true;
   }
 
-  loop(int time) {
+  loop(int tick) {
     if (runLoop) {
-      // log(time);
       if (doneLoading) {
-        if (! paused) update();
-        draw();
+        if (! paused) update(tick);
+        draw(tick);
       }
       window.requestAnimationFrame(loop);
     }
   }
 
-  update() {
+  update(int tick) {
     for (var sprite in sprites)
-      sprite.update();
+      sprite.update(tick);
   }
 
-  draw() {
+  draw(int tick) {
     clearCanvas();
     drawBackground();
     for (var sprite in sprites)
-      sprite.draw();
+      sprite.draw(tick);
   }
 
   clearCanvas() => ctx.clearRect(0, 0, width, height);
