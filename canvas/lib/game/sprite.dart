@@ -11,13 +11,15 @@ class Sprite {
   Direction _direction;
   int speed;
   bool _animate = false;
+  Function _afterAnimate = false;
   int _animationFrame = 0;
   int _lastTick = 0;
   int moves = 0;
   int movesPerTick = 0;
+  bool alive = true;
   Function onBoundsCollision;
 
-  Sprite([game, image, x, y, width, height, frameColumns, frameRows, animationRate = 60, direction, speed, onBoundsCollision, movesPerTick]) {
+  Sprite([game, image, x, y, width, height, frameColumns, frameRows, animationRate = 60, direction, speed, onBoundsCollision, movesPerTick, alive = true]) {
     this.game = game;
     this.image = image;
     this.x = x;
@@ -31,6 +33,7 @@ class Sprite {
     this._direction = (direction != null) ? direction : Direction.north;
     this.onBoundsCollision = onBoundsCollision;
     this.movesPerTick = movesPerTick;
+    this.alive = alive;
   }
 
   Direction get direction() => _direction;
@@ -46,11 +49,14 @@ class Sprite {
   List<ImageElement> get images() => game.images;
 
   draw(tick) {
-    var img = images[image];
-    ctx.drawImage(img,
-      _animationFrame * width, frameRows.indexOf(direction) * height, width, height, // source (x, y, width, height)
-      x, y, width, height // destination (x, y, width, height)
-    );
+    if (alive) {
+      var img = images[image];
+      var sourceY = (frameRows == null) ? 0 : frameRows.indexOf(direction) * height;
+      ctx.drawImage(img,
+        _animationFrame * width, sourceY, width, height, // source (x, y, width, height)
+        x, y, width, height // destination (x, y, width, height)
+      );
+    }
   }
 
   update(tick) {
@@ -62,8 +68,10 @@ class Sprite {
     if (moves > 0) move();
   }
 
-  animateOnce() {
+  animateOnce([Function callback]) {
+    game.log("got callback $callback");
     _animate = true;
+    _afterAnimate = callback;
   }
 
   animate(tick) {
@@ -74,12 +82,12 @@ class Sprite {
         _lastTick = 0;
         _animationFrame = 0;
         _animate = false;
+        if (_afterAnimate != null) _afterAnimate();
       }
     }
   }
 
   move() {
-    game.log("move");
     while (moves > 0) {
       moves--;
       x += direction.xVelocity * speed;

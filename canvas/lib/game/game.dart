@@ -13,7 +13,7 @@ class Game {
   Player player;
   Image background;
   Set<String> keysPressed;
-  List<String> imagesToLoad = const ['grass.bmp', 'archer_attack.png', 'zombie walk.png'];
+  List<String> imagesToLoad = const ['grass.bmp', 'archer_attack.png', 'zombie walk.png', 'arrow.png'];
 
   log(msg) => window.console.log(msg);
 
@@ -24,6 +24,19 @@ class Game {
     height = canvas.height;
     keysPressed = new Set<String>();
     sprites = new List<Sprite>();
+
+    // Arrow
+    var arrow = new Sprite(
+      game: this, // we'll define an interface between Game/Canvas/Objects later once we know what we need!
+      image: 'arrow.png',
+      alive: false,
+      x: 0, y: 0,
+      width: 32, height: 32,
+      speed: 5,
+      frameColumns: 1,
+      movesPerTick: 1
+    );
+    sprites.add(arrow);
 
     // Zombie
     sprites.add(new Sprite(
@@ -68,6 +81,8 @@ class Game {
         Direction.northWest
       ]
     ));
+    player.arrow = arrow;
+
     load();
   }
 

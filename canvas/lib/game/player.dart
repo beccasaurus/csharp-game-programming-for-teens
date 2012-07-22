@@ -1,11 +1,18 @@
 class Player {
   Sprite sprite;
+  Sprite arrow;
 
-  Player([Sprite sprite]) {
+  Player([Sprite sprite, Sprite arrow]) {
     this.sprite = sprite;
+    this.arrow = arrow;
   }
 
-  shoot() => sprite.animateOnce();
+  shoot() => sprite.animateOnce(() {
+    arrow.direction = sprite.direction;
+    arrow.x = sprite.x + 30;;
+    arrow.y = sprite.y + 30;
+    arrow.alive = true;
+  });
 
   update(tick) {
     updateDirection();
