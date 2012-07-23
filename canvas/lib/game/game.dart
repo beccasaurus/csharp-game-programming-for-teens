@@ -31,6 +31,12 @@ class Game {
     keysPressed = new Set<String>();
     sprites = new List<Sprite>();
 
+    // TODO - move this out of here!  make subclasses for now, eg. ArrowSprite?  This would make it very 
+    //        easy to re-use certain sprites AND it may help us come up with the final Sprite class design 
+    //        as we'll end up with a few well-factored classes instead of 1 that tries to handle all edge cases!
+    //        Sprite subclasses should probably override a few key methods, eg. update() and draw().
+    //        Sprite may end up becoming an interface without a base implementation.  We'll see.
+
     // Arrow
     var arrow = new Sprite(
       game: this, // we'll define an interface between Game/Canvas/Objects later once we know what we need!
