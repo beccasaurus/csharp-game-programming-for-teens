@@ -34,4 +34,10 @@ class ArrowSprite extends Sprite {
     animationX = xAndY[0] * width;
     animationY = xAndY[1] * height;
   }
+
+  move() {
+    super.move();
+    if (x == 0 || y == 0 || x == xMax || y == yMax)
+      alive = false; // kill arrow when it goes out of bounds
+  }
 }
