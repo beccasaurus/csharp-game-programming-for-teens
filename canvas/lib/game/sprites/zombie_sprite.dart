@@ -9,6 +9,7 @@ class ZombieSprite extends Sprite {
     speed: 1,
     frameColumns: 8,
     movesPerTick: 1,
+    direction: Direction.east,
     frameRows: [
       Direction.north,
       Direction.northEast,
@@ -18,11 +19,14 @@ class ZombieSprite extends Sprite {
       Direction.southWest,
       Direction.west,
       Direction.northWest
-    ],
-    direction: Direction.east
-  ) {
-    this.onBoundsCollision = (s) {
-      s.direction = (s.direction == Direction.east) ? Direction.west : Direction.east;
-    };
+    ]
+  ) {}
+
+  move() {
+    super.move();
+    if (x == xMax)
+      direction = Direction.west;
+    else if (x == 0)
+      direction = Direction.east;
   }
 }

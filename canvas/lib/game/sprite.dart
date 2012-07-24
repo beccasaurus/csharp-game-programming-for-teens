@@ -30,9 +30,8 @@ class Sprite {
   int moves = 0;
   int movesPerTick = 0;
   bool alive = true;
-  Function onBoundsCollision;
 
-  Sprite([game, image, x, y, width, height, frameColumns, frameRows, animationRate = 60, direction, speed, onBoundsCollision, movesPerTick, alive = true, projectile = false]) {
+  Sprite([game, image, x, y, width, height, frameColumns, frameRows, animationRate = 60, direction, speed, movesPerTick, alive = true, projectile = false]) {
     this.game = game;
     this.image = image;
     this.x = x;
@@ -44,7 +43,6 @@ class Sprite {
     this.animationRate = animationRate;
     this.speed = speed;
     this._direction = (direction != null) ? direction : Direction.north;
-    this.onBoundsCollision = onBoundsCollision;
     this.movesPerTick = movesPerTick;
     this.alive = alive;
     this.projectile = projectile;
@@ -75,9 +73,6 @@ class Sprite {
 
   update(tick) {
     if (! alive) return;
-
-    if (onBoundsCollision != null && ((x < 0) || (y < 0) || (x + width > game.width) || (y + height > game.height)))
-      onBoundsCollision(this);
 
     if (projectile) {
       game.sprites.forEach((sprite) {
@@ -123,11 +118,18 @@ class Sprite {
     }
   }
 
+  int get xMax() => game.width - width;
+  int get yMax() => game.height - height;
+
   move() {
     while (moves > 0) {
       moves--;
       x += direction.xVelocity * speed;
       y += direction.yVelocity * speed;
+      if (x > xMax) x = xMax;
+      if (x < 0) x = 0;
+      if (y > yMax) y = yMax;
+      if (y < 0) y = 0;
     }
   }
 
