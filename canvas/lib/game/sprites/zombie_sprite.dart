@@ -6,6 +6,7 @@ class ZombieSprite extends Sprite {
     image: 'zombie walk.png',
     width: 96,
     height: 96,
+    animate: true,
     speed: 1,
     frameColumns: 8,
     movesPerTick: 1,

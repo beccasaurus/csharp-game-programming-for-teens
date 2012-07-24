@@ -24,14 +24,14 @@ class Sprite {
   int speed;
   bool projectile;
   bool _animate = false;
-  Function _afterAnimate = false;
+  Function _afterAnimate;
   int _animationFrame = 0;
   int _lastTick = 0;
   int moves = 0;
   int movesPerTick = 0;
   bool alive = true;
 
-  Sprite([game, image, x, y, width, height, frameColumns, frameRows, animationRate = 60, direction, speed, movesPerTick, alive = true, projectile = false]) {
+  Sprite([game, image, x, y, width, height, frameColumns, frameRows, animationRate = 60, direction, speed, movesPerTick, alive = true, projectile = false, animate = false]) {
     this.game = game;
     this.image = image;
     this.x = x;
@@ -46,6 +46,7 @@ class Sprite {
     this.movesPerTick = movesPerTick;
     this.alive = alive;
     this.projectile = projectile;
+    this._animate = animate;
   }
 
   Direction get direction() => _direction;
@@ -99,20 +100,23 @@ class Sprite {
     this.alive = false;
   }
 
+  // This is wicked icky ... will redo/kill this later.
   animateOnce([Function callback]) {
     game.log("got callback $callback");
     _animate = true;
-    _afterAnimate = callback;
+    _afterAnimate = () {
+      if (callback != null) callback();
+      _animate = false;
+    };
   }
 
   animate(tick) {
-    if (tick > _lastTick + animationRate) {
+    if (tick > _lastTick + animationRate) { // WTF is this doing in HERE?  this should be part of Game!
       _lastTick = tick;
       _animationFrame++;
       if (_animationFrame >= frameColumns) { // done with this animation
         _lastTick = 0;
         _animationFrame = 0;
-        _animate = false;
         if (_afterAnimate != null) _afterAnimate();
       }
     }
