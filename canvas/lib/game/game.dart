@@ -29,66 +29,13 @@ class Game {
     width = canvas.width;
     height = canvas.height;
     keysPressed = new Set<String>();
+
+    player = new Player(sprite: new ArcherSprite(x: 50, y: 100, game: this));
+    player.arrow = new ArrowSprite(game: this);
+
     sprites = new List<Sprite>();
-
-    // Arrow
-    var arrow = new Sprite(
-      game: this, // we'll define an interface between Game/Canvas/Objects later once we know what we need!
-      image: 'arrow.png',
-      alive: false,
-      x: 0, y: 0,
-      width: 32, height: 32,
-      speed: 5,
-      frameColumns: 1,
-      movesPerTick: 1,
-      projectile: true
-    );
-    sprites.add(arrow);
-
-    // Zombie
-    sprites.add(new Sprite(
-      game: this, // we'll define an interface between Game/Canvas/Objects later once we know what we need!
-      image: 'zombie walk.png',
-      x: 5, y: 5,
-      width: 96, height: 96,
-      speed: 1,
-      frameColumns: 8,
-      movesPerTick: 1,
-      frameRows: [
-        Direction.north,
-        Direction.northEast,
-        Direction.east,
-        Direction.southEast,
-        Direction.south,
-        Direction.southWest,
-        Direction.west,
-        Direction.northWest
-      ],
-      direction: Direction.east,
-      onBoundsCollision: (s) {
-        s.direction = (s.direction == Direction.east) ? Direction.west : Direction.east;
-      }
-    ));
-
-    player = new Player(sprite: new Sprite(
-      game: this, // we'll define an interface between Game/Canvas/Objects later once we know what we need!
-      image: 'archer_attack.png',
-      x: 50, y: 100,
-      width: 96, height: 96,
-      speed: 2,
-      frameColumns: 10,
-      frameRows: [
-        Direction.north,
-        Direction.northEast,
-        Direction.east,
-        Direction.southEast,
-        Direction.south,
-        Direction.southWest,
-        Direction.west,
-        Direction.northWest
-      ]
-    ));
-    player.arrow = arrow;
+    sprites.add(player.arrow);
+    sprites.add(new ZombieSprite(x: 5, y: 5, game: this));
 
     load();
   }
