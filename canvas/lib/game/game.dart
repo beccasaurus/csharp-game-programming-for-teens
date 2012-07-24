@@ -20,6 +20,8 @@ class Game {
   Image background;
   Set<String> keysPressed;
   List<String> imagesToLoad = const ['grass.bmp', 'archer_attack.png', 'zombie walk.png', 'arrow.png'];
+  var fps = 0;
+  int _lastTick;
 
   log(msg) => window.console.log(msg);
 
@@ -108,10 +110,18 @@ class Game {
     document.query('#stopped').dataAttributes['enabled'] = true;
   }
 
+  saveFPS(tick) {
+    if (_lastTick == null) _lastTick = tick;
+    fps = 1000 / (tick - _lastTick);
+    _lastTick = tick;
+  }
+
   loop(int tick) {
+    saveFPS(tick);
     if (runLoop) {
       if (doneLoading) {
         if (! paused) update(tick);
+        // if (tick > _lastTick + 16) ? <--- limit? ... log FPS to find out ...
         draw(tick);
       }
       window.requestAnimationFrame(loop);
@@ -127,6 +137,7 @@ class Game {
   draw(int tick) {
     clearCanvas();
     drawBackground();
+    ctx.fillText('FPS: $fps', 10, height - 10);
     for (var sprite in sprites)
       sprite.draw(tick);
     player.draw(tick);
