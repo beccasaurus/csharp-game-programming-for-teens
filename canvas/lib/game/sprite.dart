@@ -15,6 +15,8 @@ class Sprite {
   String image;
   int x;
   int y;
+  int animationX;
+  int animationY;
   int width;
   int height;
   List<Direction> frameRows;
@@ -63,12 +65,10 @@ class Sprite {
 
   draw(tick) {
     if (! alive) return;
-
     var img = images[image];
-    var sourceY = (frameRows == null) ? 0 : frameRows.indexOf(direction) * height;
     ctx.drawImage(img,
-      _animationFrame * width, sourceY, width, height, // source (x, y, width, height)
-      x, y, width, height // destination (x, y, width, height)
+      animationX, animationY, width, height, // source (x, y, width, height)
+      x, y, width, height                    // destination (x, y, width, height)
     );
   }
 
@@ -92,6 +92,7 @@ class Sprite {
 
     if (movesPerTick != null) moves += movesPerTick;
     if (_animate) animate(tick);
+    calculateAnimationFrame();
     if (moves > 0) move();
   }
 
@@ -111,7 +112,7 @@ class Sprite {
   }
 
   animate(tick) {
-    if (tick > _lastTick + animationRate) { // WTF is this doing in HERE?  this should be part of Game!
+    if (tick > _lastTick + animationRate) {
       _lastTick = tick;
       _animationFrame++;
       if (_animationFrame >= frameColumns) { // done with this animation
@@ -122,6 +123,11 @@ class Sprite {
     }
   }
 
+  calculateAnimationFrame() {
+      animationX = _animationFrame * width;
+      animationY = (frameRows == null) ? 0 : frameRows.indexOf(direction) * height;
+  }
+
   int get xMax() => game.width - width;
   int get yMax() => game.height - height;
 
@@ -130,6 +136,8 @@ class Sprite {
       moves--;
       x += direction.xVelocity * speed;
       y += direction.yVelocity * speed;
+
+      // Make sure x/y doesn't leave the board.
       if (x > xMax) x = xMax;
       if (x < 0) x = 0;
       if (y > yMax) y = yMax;

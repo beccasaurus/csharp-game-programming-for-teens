@@ -12,8 +12,10 @@ class Direction {
   static final Direction southEast = const Direction('South East', 1, 1, const [KeyName.DOWN, KeyName.RIGHT]);
   static final Direction southWest = const Direction('South West', -1, 1, const [KeyName.DOWN, KeyName.LEFT]);
 
-  // NOTE: 2-part directions are intentionally listed first here (coupled to key checking).  Do not change.
+  // NOTE: 2-part directions are intentionally listed first here (coupled to key checking).  Do not change (without making sure fromKeys still works).
   static final List<Direction> all = const [ northEast, northWest, southEast, southWest, north, south, east, west ];
+
+  int hashCode() => all.indexOf(this);
 
   static Direction fromName(String name) {
     for (var direction in all)
