@@ -13,14 +13,16 @@ class MultiTouchTest {
   List<Point> _touchedPoints;
   List<List<Point>> _recentPoints;
   bool _mouseDown;
+  var _text;
+  Set<int> _touchIds;
 
   MultiTouchTest() {
     canvas = document.query('#canvas');
     ctx = canvas.getContext('2d');
     _touchedPoints = new List<Point>();
     _recentPoints = new List<List<Point>>();
+    _touchIds = new Set<int>();
     _setupEvents();
-    document.body.nodes.add(new Element.html("<h1>Screen ${window.screen.width}x${window.screen.height}</h1>"));
   }
 
   run() {
@@ -46,6 +48,8 @@ class MultiTouchTest {
     }
     ctx.globalAlpha = 1.0;
 
+    ctx.fillText("There are ${_touchIds.length} IDs", 500, 10);
+
     if (_recentPoints.length > 5) _recentPoints.removeRange(0, 1);
     _recentPoints.add(_touchedPoints);
     _touchedPoints = new List<Point>();
@@ -53,12 +57,13 @@ class MultiTouchTest {
 
   drawPoint(point) {
     ctx.beginPath();
-    ctx.arc(point.x, point.y, 2, 0, PI_2, false);
+    ctx.arc(point.x, point.y - 100, 2, 0, PI_2, false);
     ctx.fill();
     ctx.closePath();
   }
 
   _loop(int tick) {
+    if (tick == null) tick = new Date.now().millisecondsSinceEpoch;
     if (!_stopped) {
       draw(tick);
       window.requestAnimationFrame(_loop);
@@ -66,21 +71,27 @@ class MultiTouchTest {
   }
 
   _setupEvents() {
-    canvas.on.click.add((e) => _touchedPoints.add(new Point(e.offsetX, e.offsetY)));
-    canvas.on.mouseDown.add((e) => _mouseDown = true);
-    canvas.on.mouseUp.add((e) => _mouseDown = false);
-    canvas.on.mouseMove.add((e) {
+    document.on.click.add((e) => _touchedPoints.add(new Point(e.offsetX, e.offsetY)));
+    document.on.mouseDown.add((e) => _mouseDown = true);
+    document.on.mouseUp.add((e) => _mouseDown = false);
+    document.on.mouseMove.add((e) {
       if (_mouseDown)
         _touchedPoints.add(new Point(e.offsetX, e.offsetY));
     });
-    canvas.on.touchStart.add((e) {
-      _mouseDown = true;
+    document.on.touchStart.add((e) {
+      e.preventDefault();
+      for (var touch in e.touches)
+        _touchIds.add(touch.identifier);
     }, false);
-    canvas.on.touchEnd.add((e) {
-      _mouseDown = false;
+    document.on.touchEnd.add((e) {
+      e.preventDefault();
+      for (var touch in e.touches)
+        _touchIds.remove(touch.identifier);
     });
-    canvas.on.touchMove.add((e) {
-      _touchedPoints.addAdd(e.touches.map((touch) => new Point(touch.pageX, touch.pageY)));
+    document.on.touchMove.add((e) {
+      e.preventDefault();
+      for (var touch in e.touches)
+        _touchedPoints.add(new Point(touch.pageX, touch.pageY));
     });
   }
 }
