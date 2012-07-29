@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dart Canvas Scrolling</title>
+    <style>
+      #map {
+        width: 800px;
+        height: 500px;
+        outline: 1px solid black;
+        position: relative;
+      }
+      canvas {
+        outline: 4px solid black;
+        position: absolute;
+        left: 10px;
+        top: 10px;
+      }
+      #info {
+        outline: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map">
+      <canvas id="canvas" width="200px" height="150px"></canvas>
+    </div>
+    <div id="info">
+      <ul>
+        <li>Scroll Position: <span id="scrollPosition"></span></li>
+      </ul>
+    </div>
+    <script type="application/dart" src="scrolling.dart"></script>
+    <script type="text/javascript" src="dart.js"></script>
+  </body>
+</html>
