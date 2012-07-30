@@ -3,6 +3,64 @@
 #import('dart:html');
 #import('dart:math');
 
+class GameMap {
+  int height, width;
+  Viewport viewport;
+  TileMap tileMap;
+
+  GameMap([int height = 800, int width = 500, Viewport viewport, TileMap tileMap]) {
+    this.height = height;
+    this.width = width;
+    this.viewport = viewport != null ? viewport : new Viewport();
+    this.tileMap = tileMap != null ? tileMap : new TileMap();
+  }
+}
+
+// Because Point is taken ... and Point sucks ...
+class Coord {
+  int x, y;
+
+  Coord([int x = 0, int y = 0]) {
+    this.x = x;
+    this.y = y;
+  }
+
+  String toString() => '($x, $y)';
+
+  bool operator ==(Object other) => (other != null && other.x == x && other.y == y);
+}
+
+class Viewport {
+  int x, y, width, height;
+
+  Viewport([int x = 0, int y = 0, int width = 320, int height = 256]) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+
+  Coord get coord() => new Coord(x, y);
+
+  scrollTo([int x, int y]) {
+    if (x != null) this.x = x;
+    if (y != null) this.y = y;
+  }
+}
+
+class TileMap {
+  String image;
+  int tileWidth, tileHeight, tileSpacing, columns;
+
+  TileMap([String image, int tileWidth = 32, int tileHeight = 32, int tileSpacing = 1, int columns = 5]) {
+    this.image = image;
+    this.tileWidth = tileWidth;
+    this.tileHeight = tileHeight;
+    this.tileSpacing = tileSpacing;
+    this.columns = columns;
+  }
+}
+
 class CanvasScrolling {
   CanvasRenderingContext2D _ctx;
   CanvasElement _canvas;
