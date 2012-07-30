@@ -12,21 +12,37 @@
       canvas {
         outline: 4px solid black;
         position: absolute;
-        left: 10px;
-        top: 10px;
       }
       #info {
         outline: 1px solid black;
       }
+      .hint {
+        font-style: italic;
+        color: #666;
+      }
+      .cell {
+        opacity: 0.3;
+        font-size: 9px;
+        margin: 0;
+        padding: 0;
+      }
     </style>
   </head>
   <body>
+    <span class="hint">
+      large box represents the size of the full level/map<br />
+      small box represents the current game view (actual canvas)<br />
+      use arrow keys to scroll around the game
+    </span>
     <div id="map">
-      <canvas id="canvas" width="200px" height="150px"></canvas>
+      <canvas id="canvas" width="256px" height="192px" style="top: 100px; left: 100px;"></canvas>
     </div>
     <div id="info">
       <ul>
+        <li>Loading: <span id="loading"></span></li>
         <li>Scroll Position: <span id="scrollPosition"></span></li>
+        <li>Starting Tile: <span id="startingTile"></span></li>
+        <li>Rendering: <span id="rendering"></span></li>
       </ul>
     </div>
     <script type="application/dart" src="scrolling.dart"></script>

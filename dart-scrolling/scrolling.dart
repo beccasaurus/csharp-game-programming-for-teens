@@ -8,19 +8,35 @@ class CanvasScrolling {
   CanvasElement _canvas;
   Point _scrollPosition;
   Set<String> _pressedKeys;
-  num _scrollVelocity = 1;
+  num _scrollVelocity = 2;
   int _mapWidth = 800;
   int _mapHeight = 500;
+  int _tileSize = 32;
+  Map<String, Element> _infoElements;
+  DivElement _map;
+  ImageElement _palette;
 
   List<int> tiles = const [17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 16, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 8, 113, 113, 113, 113, 126, 123, 137, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 7, 113, 113, 113, 136, 123, 123, 123, 134, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 7, 113, 113, 113, 136, 127, 123, 119, 134, 113, 91, 113, 113, 113, 113, 113, 102, 100, 113, 113, 113, 113, 113, 113, 113, 7, 113, 113, 113, 113, 128, 123, 125, 113, 113, 113, 113, 113, 113, 113, 92, 139, 80, 113, 113, 113, 96, 94, 113, 113, 7, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 102, 122, 100, 113, 113, 113, 96, 94, 113, 113, 7, 113, 113, 135, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 92, 110, 139, 80, 113, 113, 113, 96, 94, 113, 113, 7, 113, 113, 113, 113, 113, 113, 130, 113, 113, 113, 113, 113, 113, 113, 81, 81, 113, 113, 113, 113, 113, 113, 113, 113, 7, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 7, 113, 135, 113, 113, 113, 113, 113, 113, 138, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 7, 113, 113, 113, 113, 113, 113, 113, 126, 40, 134, 113, 113, 113, 113, 113, 113, 130, 113, 113, 106, 104, 113, 113, 113, 7, 113, 113, 113, 113, 113, 113, 113, 128, 125, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 84, 84, 104, 113, 113, 7, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 86, 115, 113, 113, 113, 7, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 113, 7];
 
   CanvasScrolling() {
+    _map = document.query('#map');
     _canvas = document.query('#canvas');
     _ctx = _canvas.getContext('2d');
-    _scrollPosition = new Point(10, 10);
+    _scrollPosition = new Point(100, 10);
     _pressedKeys = new Set<String>();
+    _palette = new ImageElement(src: 'palette.png');
+    _palette.on.load.add((e) => _info('loading', 'Loaded palette.png'));
     document.on.keyDown.add((event) => _pressedKeys.add(event.keyIdentifier));
     document.on.keyUp.add((event) => _pressedKeys.remove(event.keyIdentifier));
+
+    var tileNum = 1;
+    for (var y = 0; y < _mapHeight; y += 32) {
+      for (var x = 0; x < _mapWidth; x += 32) {
+        var html = '<div class="cell" style="position: absolute; top: ${y}px; left: ${x}px; width: 32px; height: 32px;">$tileNum</div>';
+        _map.nodes.add(new Element.html(html));
+        tileNum++;
+      }
+    }
   }
 
   run() => window.requestAnimationFrame(_loop);
@@ -47,12 +63,40 @@ class CanvasScrolling {
     if (_scrollPosition.y > _mapHeight - _canvas.height) _scrollPosition.y = _mapHeight - _canvas.height;
   }
 
+  _info(id, value) {
+    if (_infoElements == null) _infoElements = new Map<String, Element>();
+    if (! _infoElements.containsKey(id)) _infoElements[id] = document.query('#${id}');
+    _infoElements[id].innerHTML = value;
+  }
+
   _draw(int tick) {
     // move canvas within full map
     _canvas.style.left = '${_scrollPosition.x}px';
     _canvas.style.top = '${_scrollPosition.y}px';
 
     // update UI
-    document.query('#scrollPosition').innerHTML = 'x: ${_scrollPosition.x}, y: ${_scrollPosition.y}';
+    _info('scrollPosition', 'x: ${_scrollPosition.x}, y: ${_scrollPosition.y}');
+
+    // figure out which tiles to render
+    var tileSize = 32;
+    var tileMapSpacing = 1; // spacing between tiles in PNG
+    
+    // find starting tiles
+    var startingX = _scrollPosition.x / tileSize;
+    var startingY = _scrollPosition.y / tileSize;
+    var tileIndex = ((startingY.floor() * (_mapWidth / _tileSize)) + startingX.floor()).toInt();
+    var tileId = tileIndex + 1;
+    var paletteId = tiles[tileIndex];
+    _info('startingTile', '$tileId  (Down: $startingY, Across: $startingX, Palette ID: $paletteId)');
+
+    // ok, let's render something
+    var paletteColumns = 5;
+    var paletteX = ((paletteId - 1) % paletteColumns) * (_tileSize + 1);
+    var paletteY = (((paletteId - 1) / paletteColumns).toInt() * (_tileSize + 1));
+    _ctx.drawImage(_palette,
+      paletteX, paletteY, _tileSize, _tileSize,
+      0, 0, _tileSize, _tileSize
+    );
+    _info('rendering', 'x: $paletteX, y: $paletteY');
   }
 }
