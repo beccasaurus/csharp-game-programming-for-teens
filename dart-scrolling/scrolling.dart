@@ -1,7 +1,7 @@
+#library('scrolling');
+
 #import('dart:html');
 #import('dart:math');
-
-main() => new CanvasScrolling().start();
 
 class CanvasScrolling {
   CanvasRenderingContext2D _ctx;
@@ -28,7 +28,6 @@ class CanvasScrolling {
     _scrollPosition = new Point(0, _mapHeight - _canvas.height);
     _pressedKeys = new Set<String>();
     _palette = new ImageElement(src: 'palette.png');
-    _palette.on.load.add((e) => _info('loading', 'Loaded palette.png'));
     document.on.keyDown.add((event) => _pressedKeys.add(event.keyIdentifier));
     document.on.keyUp.add((event) => _pressedKeys.remove(event.keyIdentifier));
 
