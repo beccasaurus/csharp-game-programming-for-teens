@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test Harness</title>
+  </head>
+  <body>
+    <span class="hint">
+      large box represents the size of the full level/map<br />
+      small box represents the current game view (actual canvas)<br />
+      use arrow keys to scroll around the game
+    </span>
+    <div id="map">
+      <canvas id="canvas" width="256px" height="192px" style="top: 100px; left: 100px;"></canvas>
+    </div>
+    <div id="info">
+      <ul>
+        <li>Loading: <span id="loading"></span></li>
+        <li>Scroll Position: <span id="scrollPosition"></span></li>
+        <li>Starting Tile: <span id="startingTile"></span></li>
+        <li>Rendering: <span id="rendering"></span></li>
+      </ul>
+    </div>
+    <script type="application/dart" src="tests.dart"></script>
+    <script type="text/javascript" src="vendor/dart.js"></script>
+  </body>
+</html>

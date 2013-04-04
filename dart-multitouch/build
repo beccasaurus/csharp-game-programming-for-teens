@@ -1,0 +1,2 @@
+#! /bin/sh
+dart2js -oindex.dart.js index.dart

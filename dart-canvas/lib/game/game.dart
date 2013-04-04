@@ -5,7 +5,6 @@
 // TODO for now, zombies could bounce around at angles, like jezzballs ... diagonals ... when hitting East bounds, could randomly select any West bound direction.
 
 class Game {
-  Document doc;
   CanvasRenderingContext2D ctx;
   CanvasElement canvas;
   int width;
