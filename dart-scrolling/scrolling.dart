@@ -1,7 +1,9 @@
-#library('scrolling');
+library scrolling;
 
-#import('dart:html');
-#import('dart:math');
+import 'dart:html';
+import 'dart:math';
+
+main() => new CanvasScrolling().start();
 
 class GameMap {
   int height, width;
